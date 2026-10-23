@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><title>Sapparos Stock</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f4f6f9;--sf:#fff;--tx:#1b2430;--mu:#667085;--bd:#e2e6ec;--pr:#d9480f;--ok:#2b8a3e;--okb:#e3f6e8;--lw:#b45309;--lwb:#fef3c7;--ot:#c92a2a;--otb:#fde4e4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12161c;--sf:#1b222b;--tx:#e8ecf2;--mu:#9aa5b5;--bd:#2c3644;--pr:#ff8a50;--ok:#69db7c;--okb:#16321e;--lw:#fcc419;--lwb:#3a2f0b;--ot:#ff8787;--otb:#401a1a}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#12161c;--sf:#1b222b;--tx:#e8ecf2;--mu:#9aa5b5;--bd:#2c3644;--pr:#ff8a50;--ok:#69db7c;--okb:#16321e;--lw:#fcc419;--lwb:#3a2f0b;--ot:#ff8787;--otb:#401a1a}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 "Noto Sans Thai","Noto Sans Myanmar","Sarabun",system-ui,sans-serif}
+#app{display:flex;flex-direction:column;min-height:100vh}
+aside{background:var(--sf);border-bottom:1px solid var(--bd);display:flex;overflow-x:auto;gap:2px;padding:6px}
+aside b{display:none;color:var(--pr);font-size:20px;padding:8px 10px}
+aside button{flex:none;border:0;background:none;color:var(--mu);padding:10px 12px;border-radius:8px;font:inherit;cursor:pointer;text-align:left;white-space:nowrap}
+aside button.on{background:var(--pr);color:#fff}
+main{flex:1;padding:14px;max-width:1200px;width:100%}
+@media(min-width:860px){#app{flex-direction:row}aside{flex-direction:column;width:230px;border:0;border-right:1px solid var(--bd);padding:12px;position:sticky;top:0;height:100vh}aside b{display:block}main{padding:24px}}
+h2{margin:0 0 12px;font-size:20px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
+.stat{cursor:pointer}.stat .n{font-size:28px;font-weight:700}.stat .l{color:var(--mu);font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+input,select,textarea,button.b{font:inherit;color:var(--tx);background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;min-width:0}
+button.b{cursor:pointer;background:var(--pr);color:#fff;border-color:var(--pr);font-weight:600}button.b.g{background:var(--sf);color:var(--tx);border-color:var(--bd)}button.b:disabled{opacity:.5}
+.tw{overflow-x:auto;border:1px solid var(--bd);border-radius:10px;background:var(--sf)}
+table{border-collapse:collapse;width:100%;min-width:560px}th,td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}th{background:var(--bg);font-size:13px;color:var(--mu)}
+td.r,th.r{text-align:right}td input.q{width:90px;text-align:right}
+.tag{padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}.ok{background:var(--okb);color:var(--ok)}.low{background:var(--lwb);color:var(--lw)}.out{background:var(--otb);color:var(--ot)}
+.err{color:var(--ot);font-size:13px}.mu{color:var(--mu)}
+.ov{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:14px;z-index:20}.md{background:var(--sf);border-radius:14px;padding:16px;max-width:560px;width:100%;max-height:85vh;overflow:auto}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:30;display:none}
+.f{display:grid;grid-template-columns:1fr;gap:8px}@media(min-width:700px){.f{grid-template-columns:repeat(3,1fr)}}.f label{display:block;font-size:13px;color:var(--mu)}.f input,.f select{width:100%}
+a.dl{color:var(--pr);cursor:pointer;text-decoration:underline}
+:root{--gs:#2f9e44;--rs:#e03131}
+.card,.tw{box-shadow:0 2px 8px #0000000d;border-radius:16px}
+button.b{border-radius:12px;padding:10px 16px}button.b.gn{background:var(--gs);border-color:var(--gs);color:#fff}button.b.rd{background:var(--rs);border-color:var(--rs);color:#fff}
+aside button{border-radius:12px}aside button.gi{color:var(--ok)}aside button.go{color:var(--ot)}aside button.on.gi{background:var(--gs);color:#fff}aside button.on.go{background:var(--rs);color:#fff}
+h2.hin{color:var(--ok)}h2.hout{color:var(--ot)}
+.gtx{color:var(--ok);font-weight:700}.rtx{color:var(--ot);font-weight:700}
+.ar{font-size:12px;font-weight:700;margin-left:6px;white-space:nowrap;padding:1px 7px;border-radius:99px}.ar.gtx{background:var(--okb)}.ar.rtx{background:var(--otb)}
+input.q.in{border:2px solid var(--ok);background:var(--okb)}input.q.out{border:2px solid var(--ot);background:var(--otb)}
+.stat{border-top:5px solid var(--bd)}.c-ok{border-top-color:var(--ok)}.c-low{border-top-color:var(--lw)}.c-out,.c-rout{border-top-color:var(--ot)}.c-rin{border-top-color:var(--ok)}
+.c-ok .n,.c-rin .n{color:var(--ok)}.c-low .n{color:var(--lw)}.c-out .n,.c-rout .n{color:var(--ot)}
+tr.r-low td:first-child{box-shadow:inset 5px 0 var(--lw)}tr.r-out td:first-child{box-shadow:inset 5px 0 var(--ot)}tr.r-ok td:first-child{box-shadow:inset 5px 0 var(--ok)}
+.ch{cursor:pointer;user-select:none;padding:4px 0;font-size:16px}th.sh{cursor:pointer;user-select:none}th.sh:hover{color:var(--tx)}
+.lg{display:flex;justify-content:flex-end;gap:6px;margin:-4px 0 10px}.lg button{border:1px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:99px;padding:4px 14px;font:inherit;cursor:pointer}.lg button.on{background:var(--pr);color:#fff;border-color:var(--pr)}
+aside .tg{font-size:15px;text-align:center}@media(min-width:860px){aside.c{width:68px}aside.c .tg{width:100%}}.lg{flex-wrap:wrap;align-items:center}
+/* modern refresh */
+:root{--bg:#f5f6f8;--sf:#fff;--tx:#12161d;--mu:#6b7482;--bd:#e7eaef;--pr:#e8590c;--ok:#12805c;--okb:#e5f6ee;--lw:#a15c07;--lwb:#fff3d1;--ot:#c8322f;--otb:#fdeceb;--gs:#12805c;--rs:#d6342f;--sh:0 1px 2px #10182809,0 6px 20px #1018280a;--ring:0 0 0 3px color-mix(in srgb,var(--pr) 20%,transparent)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1217;--sf:#171c23;--tx:#eef1f5;--mu:#97a1b0;--bd:#252c36;--pr:#ff8a50;--ok:#4fd6a0;--okb:#102e28;--lw:#f5c451;--lwb:#33290e;--ot:#ff8f8c;--otb:#391a1a;--gs:#1f9d73;--rs:#e5484d;--sh:0 1px 2px #0006,0 8px 24px #0004}}
+:root[data-theme="dark"]{--bg:#0e1217;--sf:#171c23;--tx:#eef1f5;--mu:#97a1b0;--bd:#252c36;--pr:#ff8a50;--ok:#4fd6a0;--okb:#102e28;--lw:#f5c451;--lwb:#33290e;--ot:#ff8f8c;--otb:#391a1a;--gs:#1f9d73;--rs:#e5484d;--sh:0 1px 2px #0006,0 8px 24px #0004}
+body{-webkit-font-smoothing:antialiased;letter-spacing:.004em}
+h2{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:2px 0 16px}
+main{padding:18px 16px 40px;max-width:1180px}@media(min-width:860px){main{padding:34px 40px 60px}}
+aside{padding:8px 10px;gap:4px}aside b{font-size:18px;letter-spacing:-.01em;padding:10px 12px 18px;color:var(--tx)}
+aside button{font-weight:500;padding:11px 14px;border-radius:12px;transition:background .15s,color .15s}
+aside button:hover{background:var(--bg);color:var(--tx)}
+aside button.on,aside button.on.gi,aside button.on.go{font-weight:600}
+aside button.on{background:color-mix(in srgb,var(--pr) 13%,transparent);color:var(--pr)}
+aside button.on.gi{background:color-mix(in srgb,var(--gs) 14%,transparent);color:var(--ok)}
+aside button.on.go{background:color-mix(in srgb,var(--rs) 13%,transparent);color:var(--ot)}
+aside .tg{color:var(--mu);font-size:14px}
+@media(max-width:859px){aside{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--sf) 90%,transparent)}}
+@media(min-width:860px){aside{width:248px;padding:20px 14px;gap:4px}}
+.card,.tw{border-radius:18px;box-shadow:var(--sh)}.card{padding:18px}
+.stat{border-top-width:4px;transition:transform .15s,box-shadow .15s}.stat:hover{transform:translateY(-2px)}.stat .n{font-size:32px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.stat .l{font-weight:500}
+th,td{padding:12px 14px}th{font-size:12.5px;font-weight:600;letter-spacing:.02em}td.r,th.r{font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}tbody tr:hover td,table tr:hover td{background:color-mix(in srgb,var(--pr) 5%,transparent)}
+tr.r-low td:first-child{box-shadow:inset 3px 0 var(--lw)}tr.r-out td:first-child{box-shadow:inset 3px 0 var(--ot)}tr.r-ok td:first-child{box-shadow:inset 3px 0 var(--ok)}
+.tag{padding:3px 11px;font-size:12px}.tag::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+input,select,textarea{border-radius:12px;padding:10px 12px;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--pr);box-shadow:var(--ring)}
+button.b{border-radius:12px;padding:10px 18px;box-shadow:0 1px 2px #1018281a;transition:filter .15s,transform .1s,background .15s}button.b:hover{filter:brightness(1.07)}button.b:active{transform:translateY(1px)}button.b.g{box-shadow:none}button.b.g:hover{background:var(--bg);filter:none}
+.lg button{padding:6px 16px;font-weight:500;transition:background .15s}.lg button:hover{background:var(--bg)}.lg button.on:hover{background:var(--pr)}
+.ch{font-size:16px;padding:2px 0}
+.ov{background:#0b0f1a8c;backdrop-filter:blur(4px)}.md{border-radius:22px;padding:22px;box-shadow:0 24px 70px #0005}
+#toast{border-radius:14px;padding:12px 18px;font-weight:500;box-shadow:0 10px 30px #0004}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head><body>
+<div id="app"><aside id="nav"></aside><main id="main"><p class="mu">กำลังโหลด…</p></main></div>
+<div id="toast"></div><div id="modal"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const r3=x=>Math.round(x*1000)/1000,fmt=x=>r3(x).toLocaleString('th-TH'),pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const yday=()=>{const d=new Date(Date.now()-864e5);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const dmy=s=>s?s.split('-').reverse().join('/'):'-',tm=t=>new Date(t).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+const TY={in:'รับเข้า',out:'เบิกออก',open:'ยอดยกมา'},ST={ok:'ปกติ',low:'ใกล้หมด',out:'หมดแล้ว'};
+const NAV=[['dash','🏠 ภาพรวม'],['prods','📦 สินค้าทั้งหมด'],['in','🟢 รับเข้าสินค้า'],['out','🔴 เบิกออกสินค้า'],['hist','🕘 ประวัติการเคลื่อนไหว'],['manage','🛠️ จัดการสินค้า'],['io','📂 นำเข้า/ส่งออกข้อมูล']];
+let db=null,dl=null,S={prods:[],docs:[],br:[],ready:false},V='dash',F={q:'',cat:'',st:''},H={q:'',type:'',from:'',to:'',by:'',cat:''},EDIT=null,busy=false;
+const D={in:{},out:{}},M={in:{q:'',cat:'',date:today(),note:'',who:''},out:{q:'',cat:'',date:today(),note:'',who:''}};
+let WHO='';try{WHO=localStorage.getItem('who')||''}catch(e){}
+const status=(p,q)=>q<=0?'out':q<=p.min?'low':'ok';
+const arr=b=>b&&b.last?(b.last==='out'?`<span class="ar rtx" title="เบิกออกล่าสุด">▼ ${fmt(b.lq)}</span>`:`<span class="ar gtx" title="เพิ่มเข้าล่าสุด">▲ ${fmt(b.lq)}</span>`):'<span class="mu">–</span>';
+let CB='main';try{CB=localStorage.getItem('br')||'main'}catch(e){}
+const brs=()=>[{id:'main',name:'สาขาหลัก'},...S.br],bn=()=>(brs().find(b=>b.id===CB)||{}).name||'',docsB=()=>S.docs.filter(d=>(d.branch||'main')===CB);
+function calc(){const B={},run=[];[...docsB()].sort((a,b)=>a.ts<b.ts?-1:1).forEach(d=>(d.lines||[]).forEach(l=>{const b=B[l.pid]??={q:0,li:'',lo:''};b.q=r3(b.q+(d.type==='out'?-1:1)*l.qty);b.last=d.type==='out'?'out':'in';b.lq=l.qty;if(d.type==='in'&&d.date>b.li)b.li=d.date;if(d.type==='out'&&d.date>b.lo)b.lo=d.date;run.push({...l,d,after:b.q})}));return{B,run}}
+function toast(m,bad){const t=$('#toast');t.textContent=m;t.style.background=bad?'#c92a2a':'';t.style.color=bad?'#fff':'';t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',3500)}
+const cats=()=>[...new Set(S.prods.map(p=>p.cat).filter(Boolean))].sort();
+const catOpts=(v)=>'<option value="">ทุกหมวดหมู่</option>'+cats().map(c=>`<option ${c===v?'selected':''}>${esc(c)}</option>`).join('');
+function csv(rows){return '\ufeff'+rows.map(r=>r.map(x=>{x=String(x??'');return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}).join(',')).join('\r\n')}
+async function save(name,rows){if(!dl)return toast('ส่งออกไม่ได้ในมุมมองนี้',1);if(rows.length<2)return toast('ไม่มีข้อมูลให้ส่งออก',1);try{await dl.save({filename:name,data:csv(rows)})}catch(e){toast('ยกเลิกหรือบันทึกไฟล์ไม่สำเร็จ',1)}}
+
+let NC=false;try{NC=localStorage.getItem('nc')==='1'}catch(e){}
+const CL={},cd=(id,title,body)=>`<div class="card"><div class="ch" data-cl="${id}"><b>${CL[id]?'▶':'▼'} ${title}</b></div>${CL[id]?'':body}</div>`;
+function nav(){const a=$('#nav');a.className=NC?'c':'';a.innerHTML=`<button class="tg" data-navtg title="${NC?'ขยายเมนู':'ย่อเมนู'}">${NC?'☰':'☰ ย่อเมนู'}</button>`+(NC?'':'<b>🍜 Sapparos Stock</b>')+NAV.map(([k,t])=>`<button class="${V===k?'on':''} ${k==='in'?'gi':k==='out'?'go':''}" data-v="${k}" title="${t.slice(t.indexOf(' ')+1)}">${NC?t.split(' ')[0]:t}</button>`).join('')}
+function render(){const a=document.activeElement,id=a&&a.id,pos=a&&a.selectionStart;nav();const m=$('#main');
+if(!db){m.innerHTML=LOGIN;return}
+if(!S.ready){m.innerHTML='<p class="mu">กำลังโหลดข้อมูล…</p>';return}
+m.innerHTML=lgbar()+({dash,prods,restock,in:()=>mv('in'),out:()=>mv('out'),hist,manage,io})[V]();
+if(id){const e=document.getElementById(id);if(e){e.focus();try{e.setSelectionRange(pos,pos)}catch(x){}}}}
+
+function dash(){const{B,run}=calc(),A=S.prods.filter(p=>p.active!==false);let n={ok:0,low:0,out:0},t=today(),ti=0,to=0;
+A.forEach(p=>n[status(p,(B[p.id]||{q:0}).q)]++);docsB().forEach(d=>{if(d.date===t){if(d.type==='in')ti+=d.lines.length;if(d.type==='out')to+=d.lines.length}});
+const st=(l,v,go,x)=>`<div class="card stat c-${x||go||'all'}" data-go="${go}"><div class="n">${v}</div><div class="l">${l}</div></div>`;
+const need=A.filter(p=>status(p,(B[p.id]||{q:0}).q)!=='ok');
+return`<h2>ภาพรวม</h2><div class="grid">${st('สินค้าทั้งหมด',A.length,'')}${st('ปกติ',n.ok,'ok')}${st('ใกล้หมด',n.low,'low')}${st('หมดแล้ว',n.out,'out')}${st('▲ รับเข้าวันนี้ (รายการ)',ti,'','rin')}${st('▼ เบิกออกวันนี้ (รายการ)',to,'','rout')}</div>
+${cd('need','ต้องเติมสต๊อก ('+need.length+')',(need.length?`<div class="tw" style="margin-top:8px"><table>${need.map(p=>{const q=(B[p.id]||{q:0}).q,s=status(p,q);return`<tr><td>${pn(p)}</td><td class="r">${fmt(q)} ${esc(p.unit)}</td><td class="r mu">ขั้นต่ำ ${fmt(p.min)}</td><td><span class="tag ${s}">${ST[s]}</span></td></tr>`}).join('')}</table></div>`:'<p class="mu">ไม่มีสินค้าที่ต้องเติม</p>'))}
+${byCat(A,B)}${cd('rec','เคลื่อนไหวล่าสุด',`<div class="tw" style="margin-top:8px"><table>${run.slice(-8).reverse().map(l=>`<tr><td>${dmy(l.d.date)} ${tm(l.d.ts)}</td><td>${pnl(l)}</td><td class="${l.d.type==='out'?'rtx':'gtx'}">${l.d.type==='out'?'▼':'▲'} ${TY[l.d.type]}</td><td class="r ${l.d.type==='out'?'rtx':'gtx'}">${l.d.type==='out'?'-':'+'}${fmt(l.qty)} ${esc(l.unit)}</td></tr>`).join('')||'<tr><td class="mu">ยังไม่มีรายการ</td></tr>'}</table></div>`)}`}
+
+let LANG='th';try{LANG=localStorage.getItem('lang')||'th'}catch(e){}
+document.documentElement.lang=LANG;
+const DICT=Object.create(null);
+`ภาพรวม|Overview|ခြုံငုံသုံးသပ်ချက်
+สินค้าทั้งหมด|All products|ကုန်ပစ္စည်းအားလုံး
+รับเข้าสินค้า|Receive stock|ကုန်ပစ္စည်းလက်ခံရန်
+เบิกออกสินค้า|Withdraw stock|ကုန်ပစ္စည်းထုတ်ရန်
+ประวัติการเคลื่อนไหว|Movement history|လှုပ်ရှားမှုမှတ်တမ်း
+จัดการสินค้า|Manage products|ကုန်ပစ္စည်းစီမံခန့်ခွဲမှု
+นำเข้า/ส่งออกข้อมูล|Import / Export data|ဒေတာတင်သွင်း/ထုတ်ယူရန်
+ปกติ|Normal|ပုံမှန်
+ใกล้หมด|Running low|ကုန်ခါနီး
+หมดแล้ว|Out of stock|ကုန်သွားပြီ
+รับเข้าวันนี้ (รายการ)|Received today (lines)|ယနေ့လက်ခံမှု (ကြိမ်)
+เบิกออกวันนี้ (รายการ)|Withdrawn today (lines)|ယနေ့ထုတ်ယူမှု (ကြိမ်)
+เคลื่อนไหวล่าสุด|Latest movements|နောက်ဆုံးလှုပ်ရှားမှု
+ไม่มีสินค้าที่ต้องเติม|Nothing needs restocking|ဖြည့်ရန်မလိုပါ
+ยังไม่มีรายการ|No records yet|မှတ်တမ်းမရှိသေးပါ
+สต๊อกแยกตามหมวดหมู่|Stock by category|အမျိုးအစားအလိုက် လက်ကျန်
+เปิดทั้งหมด|Expand all|အားလုံးဖွင့်ရန်
+ปิดทั้งหมด|Collapse all|အားလုံးပိတ်ရန်
+ค้นหาชื่อสินค้า|Search product name|ကုန်ပစ္စည်းအမည်ရှာရန်
+ค้นหาชื่อสินค้า/เลขที่เอกสาร|Search product / doc no.|ကုန်ပစ္စည်း/စာရွက်အမှတ်ရှာရန်
+ทุกหมวดหมู่|All categories|အမျိုးအစားအားလုံး
+ทุกสถานะ|All statuses|အခြေအနေအားလုံး
+ทุกประเภท|All types|အမျိုးအစားအားလုံး
+ทุกผู้บันทึก|All recorders|မှတ်သူအားလုံး
+ชื่อสินค้า|Product|ကုန်ပစ္စည်း
+หมวดหมู่|Category|အမျိုးအစား
+หน่วย|Unit|ယူနစ်
+คงเหลือ|In stock|လက်ကျန်
+ล่าสุด|Latest|နောက်ဆုံး
+ขั้นต่ำ|Minimum|အနည်းဆုံး
+รับเข้าล่าสุด|Last received|နောက်ဆုံးလက်ခံ
+เบิกล่าสุด|Last withdrawn|နောက်ဆုံးထုတ်
+สถานะ|Status|အခြေအနေ
+จำนวนรับเข้า|Qty to receive|လက်ခံမည့်ပမာဏ
+จำนวนเบิกออก|Qty to withdraw|ထုတ်မည့်ပမာဏ
+หลังรับเข้า|After receiving|လက်ခံပြီးနောက်
+หลังเบิก|After withdrawal|ထုတ်ပြီးနောက်
+เลขที่เอกสาร|Document no.|စာရွက်အမှတ်
+วันที่|Date|ရက်စွဲ
+เวลา|Time|အချိန်
+สินค้า|Product|ကုန်ပစ္စည်း
+ประเภท|Type|အမျိုးအစား
+รับเข้า|Received|လက်ခံ
+เบิกออก|Withdrawn|ထုတ်ယူ
+ยอดยกมา|Opening balance|ကနဦးလက်ကျန်
+หมายเหตุ|Note|မှတ်ချက်
+ผู้บันทึก|Recorded by|မှတ်တမ်းတင်သူ
+ชื่อ|Name|အမည်
+วันที่รับเข้า|Receive date|လက်ခံသည့်ရက်
+วันที่เบิกออก|Withdraw date|ထုတ်သည့်ရက်
+ผู้เบิก/ผู้บันทึก|Withdrawn by / recorder|ထုတ်သူ/မှတ်သူ
+หมายเหตุ/เหตุผล|Note / reason|မှတ်ချက်/အကြောင်းရင်း
+กรอกแล้ว|Filled|ဖြည့်ပြီး
+รายการ|items|ခု
+บันทึกรับเข้าทั้งหมด|Save all receipts|လက်ခံမှုအားလုံးသိမ်းရန်
+บันทึกเบิกออกทั้งหมด|Save all withdrawals|ထုတ်ယူမှုအားလုံးသိမ်းရန်
+ไม่พบสินค้า|No products found|ကုန်ပစ္စည်းမတွေ့ပါ
+ไม่พบรายการ|No records found|မှတ်တမ်းမတွေ့ပါ
+ยืนยันบันทึก|Confirm save|သိမ်းဆည်းမည်
+ยกเลิก|Cancel|မလုပ်တော့ပါ
+กลับไปแก้ไข|Go back and edit|ပြန်ပြင်ရန်
+ปิด|Close|ပိတ်ရန်
+กำลังบันทึก…|Saving…|သိမ်းနေသည်…
+วันนี้|Today|ယနေ့
+เมื่อวาน|Yesterday|မနေ့က
+ทั้งหมด|All|အားလုံး
+เพิ่มสินค้าใหม่|Add new product|ကုန်ပစ္စည်းအသစ်ထည့်ရန်
+แก้ไขสินค้า|Edit product|ကုန်ပစ္စည်းပြင်ရန်
+ชื่อสินค้า *|Product name *|ကုန်ပစ္စည်းအမည် *
+หมวดหมู่ *|Category *|အမျိုးအစား *
+หน่วยนับ *|Unit *|ယူနစ် *
+จำนวนขั้นต่ำที่ควรมี|Minimum stock level|ထားရှိသင့်သော အနည်းဆုံးပမာဏ
+ยอดยกมา (ถ้ามี)|Opening balance (optional)|ကနဦးလက်ကျန် (ရှိလျှင်)
+ชื่อภาษาอังกฤษ (ไม่บังคับ)|English name (optional)|အင်္ဂလိပ်အမည် (မထည့်လည်းရ)
+ชื่อภาษาพม่า (ไม่บังคับ)|Burmese name (optional)|မြန်မာအမည် (မထည့်လည်းရ)
+เพิ่มสินค้า|Add product|ကုန်ပစ္စည်းထည့်ရန်
+บันทึกการแก้ไข|Save changes|ပြင်ဆင်မှုသိမ်းရန်
+แก้ไข|Edit|ပြင်ရန်
+ปิดใช้งาน|Deactivate|ပိတ်ရန်
+เปิดใช้งาน|Activate|ဖွင့်ရန်
+แปลชื่ออัตโนมัติ (EN/พม่า)|Auto-translate names (EN/MY)|အမည်များကို အလိုအလျောက်ဘာသာပြန်ရန်
+ส่งออก CSV|Export CSV|CSV ထုတ်ယူရန်
+ส่งออกรายการสินค้า|Export products|ကုန်ပစ္စည်းစာရင်းထုတ်ရန်
+ส่งออกประวัติ (ตามตัวกรองในหน้าประวัติ)|Export history (current filters)|မှတ်တမ်းထုတ်ရန် (လက်ရှိစစ်ထုတ်မှု)
+ประวัติจะส่งออกตามช่วงวันที่/ตัวกรองที่ตั้งไว้ในหน้า “ประวัติการเคลื่อนไหว”|History is exported using the dates/filters set on the “Movement history” page|မှတ်တမ်းကို “လှုပ်ရှားမှုမှတ်တမ်း” စာမျက်နှာရှိ စစ်ထုတ်မှုအတိုင်း ထုတ်ပေးပါမည်
+นำเข้าสินค้าจากไฟล์ CSV (เพิ่มทีละมากๆ)|Import products from CSV (bulk)|CSV ဖိုင်မှ ကုန်ပစ္စည်းများတင်သွင်းရန်
+ดาวน์โหลดไฟล์ตัวอย่าง (มีแต่หัวตาราง)|Download the template (headers only)|နမူနာဖိုင်ဒေါင်းလုဒ်လုပ်ပါ (ခေါင်းစဉ်သာပါ)
+เปิดด้วย Excel หรือ Google Sheets กรอกข้อมูล แล้วบันทึกเป็น CSV UTF-8|Open in Excel or Google Sheets, fill it in, then save as CSV UTF-8|Excel သို့မဟုတ် Google Sheets ဖြင့်ဖွင့်ပြီး ဖြည့်ကာ CSV UTF-8 အဖြစ်သိမ်းပါ
+อัปโหลดกลับมาที่นี่ ตรวจตัวอย่าง แล้วกดยืนยัน สินค้าจะถูกเพิ่มทันที|Upload it here, check the preview, then confirm. Products are added immediately|ဤနေရာသို့ ပြန်တင်ပြီး နမူနာကြည့်ကာ အတည်ပြုပါ။ ကုန်ပစ္စည်းများ ချက်ချင်းထည့်သွင်းပါမည်
+ดาวน์โหลดไฟล์ตัวอย่าง|Download template|နမူနာဖိုင်ဒေါင်းလုဒ်
+ไม่มีรายการที่นำเข้าได้|Nothing can be imported|တင်သွင်းနိုင်သည့်စာရင်းမရှိပါ
+แสดง 300 รายการล่าสุด ใช้ตัวกรองหรือส่งออก CSV เพื่อดูทั้งหมด|Showing the latest 300 rows. Use filters or export CSV to see all.|နောက်ဆုံး ၃၀၀ ကိုသာပြထားသည်။ အားလုံးကြည့်ရန် စစ်ထုတ်ပါ သို့မဟုတ် CSV ထုတ်ပါ
+กำลังโหลดข้อมูล…|Loading…|ဒေတာဖွင့်နေသည်…
+ต้องเข้าสู่ระบบ claude.ai ก่อน|Please sign in to claude.ai first|claude.ai သို့ အရင်ဝင်ရောက်ပါ
+ระบบเก็บข้อมูลออนไลน์ใช้ได้เมื่อเปิดลิงก์ผ่านบัญชีที่ได้รับสิทธิ์เท่านั้น|Online data works only when the link is opened with an authorized account|အွန်လိုင်းဒေတာကို ခွင့်ပြုထားသော အကောင့်ဖြင့် လင့်ခ်ဖွင့်မှသာ အသုံးပြုနိုင်သည်
+เนื้อสัตว์|Meat|အသား
+ผัก|Vegetables|ဟင်းသီးဟင်းရွက်
+เครื่องปรุง|Seasoning|ဟင်းခတ်အမွှေးအကြိုင်
+เครื่องดื่ม|Beverages|သောက်စရာ
+วัตถุดิบ|Ingredients|ကုန်ကြမ်း
+ของใช้สิ้นเปลือง|Consumables|သုံးကုန်
+อุปกรณ์|Equipment|ကိရိယာ
+กก.|kg|ကီလို
+กรัม|g|ဂရမ်
+ลิตร|L|လီတာ
+มล.|ml|မီလီလီတာ
+ขวด|bottle|ပုလင်း
+แพ็ก|pack|ထုပ်
+กล่อง|box|သေတ္တာ
+ชิ้น|piece|အပိုင်း
+ฟอง|egg|ဥ
+ถุง|bag|အိတ်
+เบิกออกล่าสุด|Last withdrawal|နောက်ဆုံးထုတ်ယူမှု
+เพิ่มเข้าล่าสุด|Last receipt|နောက်ဆုံးလက်ခံမှု
+ไม่มีชื่อสินค้า|Missing product name|ကုန်ပစ္စည်းအမည်မရှိ
+ไม่มีหมวดหมู่|Missing category|အမျိုးအစားမရှိ
+ไม่มีหน่วยนับ|Missing unit|ယူနစ်မရှိ
+จำนวนขั้นต่ำไม่ถูกต้อง|Invalid minimum|အနည်းဆုံးပမာဏမမှန်ပါ
+ยอดยกมาไม่ถูกต้อง|Invalid opening balance|ကနဦးလက်ကျန်မမှန်ပါ
+ชื่อซ้ำ|Duplicate name|အမည်ထပ်နေသည်
+ส่งออกไม่ได้ในมุมมองนี้|Export isn't available in this view|ဤမျက်နှာပြင်တွင် ထုတ်ယူ၍မရပါ
+ไม่มีข้อมูลให้ส่งออก|No data to export|ထုတ်ယူရန်ဒေတာမရှိပါ
+ยกเลิกหรือบันทึกไฟล์ไม่สำเร็จ|Cancelled or the file could not be saved|ပယ်ဖျက်ခဲ့သည် သို့မဟုတ် ဖိုင်သိမ်း၍မရပါ
+กรุณากรอกชื่อ หมวดหมู่ และหน่วยนับ|Please enter name, category and unit|အမည်၊ အမျိုးအစားနှင့် ယူနစ်ကို ဖြည့်ပါ
+จำนวนต้องเป็นตัวเลขไม่ติดลบ|Quantities must be non-negative numbers|ပမာဏသည် သုညသို့မဟုတ် အပေါင်းကိန်းဖြစ်ရမည်
+มีสินค้าชื่อนี้อยู่แล้ว|A product with this name already exists|ဤအမည်ဖြင့် ကုန်ပစ္စည်းရှိပြီးသား
+แก้ไขสินค้าแล้ว|Product updated|ကုန်ပစ္စည်းပြင်ပြီးပါပြီ
+เพิ่มสินค้าแล้ว|Product added|ကုန်ပစ္စည်းထည့်ပြီးပါပြီ
+กรุณาระบุวันที่|Please enter a date|ရက်စွဲထည့်ပါ
+กรุณาระบุผู้บันทึก|Please enter the recorder name|မှတ်သူအမည်ထည့်ပါ
+ยังไม่ได้กรอกจำนวนสินค้า|No quantities entered|ပမာဏမဖြည့်ရသေးပါ
+ทุกสินค้ามีชื่อแปลแล้ว|All products already have translations|ကုန်ပစ္စည်းအားလုံးတွင် ဘာသာပြန်ပြီးသား
+แปลชื่อเรียบร้อย|Names translated|အမည်များဘာသာပြန်ပြီးပါပြီ
+แปลอัตโนมัติไม่ได้ในมุมมองนี้|Auto-translate isn't available here|ဤနေရာတွင် အလိုအလျောက်ဘာသာပြန်၍မရပါ
+ดาวน์โหลดไม่ได้ในมุมมองนี้|Download isn't available in this view|ဤမျက်နှာပြင်တွင် ဒေါင်းလုဒ်၍မရပါ
+ไฟล์ใหญ่เกินไป|File is too large|ဖိုင်ကြီးလွန်းသည်
+อ่านไฟล์ไม่ได้|Could not read the file|ဖိုင်ဖတ်၍မရပါ
+ไฟล์ว่างหรือไม่มีข้อมูลใต้หัวตาราง|The file is empty or has no data rows|ဖိုင်ဗလာဖြစ်နေသည် သို့မဟုတ် ဒေတာမရှိပါ
+หัวตารางไม่ตรงกับไฟล์ตัวอย่าง กรุณาดาวน์โหลดไฟล์ตัวอย่างใหม่ และบันทึกเป็น CSV UTF-8|Headers don't match the template. Please download the template again and save as CSV UTF-8|ခေါင်းစဉ်များ နမူနာနှင့်မကိုက်ပါ။ နမူနာဖိုင်ကို ပြန်ဒေါင်းပြီး CSV UTF-8 အဖြစ်သိမ်းပါ
+ต้องเติมสต๊อก|Needs restocking|ဖြည့်ရန်လိုအပ်သည်
+ย่อเมนู|Collapse menu|မီနူးချုံ့ရန်
+ขยายเมนู|Expand menu|မီနူးချဲ့ရန်
+ดูทั้งหมด|View all|အားလုံးကြည့်ရန်
+ไปรับเข้าสินค้า|Go to receive stock|ကုန်လက်ခံရန်သွားရန်
+ส่งออกรายการที่ต้องเติม|Export restock list|ဖြည့်ရန်စာရင်းထုတ်ရန်
+ขาดจากขั้นต่ำ|Short of minimum|အနည်းဆုံးထက်လိုနေသည်
+แปลชื่อสินค้าเป็น|Product names in|ကုန်ပစ္စည်းအမည်ဘာသာ
+ไม่แสดงคำแปลชื่อสินค้า|No product-name translation|ဘာသာပြန်မပြပါ
+แปลชื่อสินค้าอัตโนมัติ (ตามภาษาที่เลือก)|Auto-translate product names (selected language)|ကုန်ပစ္စည်းအမည်များကို ရွေးထားသောဘာသာဖြင့် အလိုအလျောက်ဘာသာပြန်ရန်
+ออกจากระบบ|Sign out|ထွက်ရန်
+เข้าสู่ระบบ|Sign in|ဝင်ရန်
+กรอกรหัสผ่านพนักงาน|Enter the staff password|ဝန်ထမ်းစကားဝှက်ထည့်ပါ
+รหัสผ่านไม่ถูกต้อง|Incorrect password|စကားဝှက်မမှန်ပါ
+สาขา|Branch|ဆိုင်ခွဲ
+สาขาหลัก|Main branch|ဆိုင်ခွဲအဓိက
+เพิ่มสาขา|Add branch|ဆိုင်ခွဲထည့်ရန်
+ชื่อสาขา|Branch name|ဆိုင်ခွဲအမည်
+กรุณากรอกชื่อสาขา|Please enter a branch name|ဆိုင်ခွဲအမည်ထည့်ပါ
+มีสาขาชื่อนี้แล้ว|A branch with this name already exists|ဤအမည်ဖြင့် ဆိုင်ခွဲရှိပြီးသား
+เพิ่มสาขาแล้ว|Branch added|ဆိုင်ခွဲထည့်ပြီးပါပြီ
+รายการสินค้าใช้ร่วมกันทุกสาขา แต่สต๊อก ประวัติ และยอดยกมาแยกตามสาขาที่เลือกไว้|The product list is shared by all branches; stock, history and opening balances are kept per selected branch|ကုန်ပစ္စည်းစာရင်းကို ဆိုင်ခွဲအားလုံးမျှဝေသည်၊ လက်ကျန်၊ မှတ်တမ်းနှင့် ကနဦးလက်ကျန်ကို ရွေးထားသောဆိုင်ခွဲအလိုက်သိမ်းသည်`.split('\n').forEach(l=>{const a=l.split('|');if(a.length>=3)DICT[a[0]]=[a[1],a[2]]});
+const tw=(s,i)=>DICT[s]?DICT[s][i]:s;
+const UN='(กก[.]|กรัม|ลิตร|มล[.]|ขวด|แพ็ก|กล่อง|ชิ้น|ฟอง|ถุง)';
+const PAT=[
+[/^([0-9][0-9,.]*) รายการ$/,m=>[m[1]+' items',m[1]+' ခု']],
+[/^[(]([0-9]+) รายการ[)]$/,m=>['('+m[1]+' items)','('+m[1]+' ခု)']],
+[/^หมวด (.+)$/,m=>['Category '+tw(m[1],0),'အမျိုးအစား '+tw(m[1],1)]],
+[/^(ใกล้หมด|หมด) ([0-9]+)$/,m=>{const k=m[1]==='หมด'?'หมดแล้ว':m[1];return[tw(k,0)+' '+m[2],tw(k,1)+' '+m[2]]}],
+[/^ต้องเติมสต๊อก [(]([0-9]+)[)]$/,m=>['Needs restocking ('+m[1]+')','ဖြည့်ရန်လိုအပ် ('+m[1]+')']],
+[/^ขั้นต่ำ (.+)$/,m=>['Min '+m[1],'အနည်းဆုံး '+m[1]]],
+[new RegExp('^([+-]?[0-9][0-9,.]*) '+UN+'$'),m=>[m[1]+' '+tw(m[2],0),m[1]+' '+tw(m[2],1)]],
+[/^(.+) ⚠ เกินสต๊อก$/,m=>[m[1]+' ⚠ exceeds stock',m[1]+' ⚠ လက်ကျန်ထက်ကျော်နေသည်']],
+[/^พร้อมนำเข้า ([0-9]+) รายการ$/,m=>['Ready to import '+m[1]+' items',m[1]+' ခု တင်သွင်းရန်အသင့်']],
+[/^ยืนยันนำเข้า ([0-9]+) รายการ$/,m=>['Confirm import of '+m[1]+' items',m[1]+' ခု တင်သွင်းမှုအတည်ပြုရန်']],
+[/^ยืนยัน(รับเข้า|เบิกออก) ([0-9]+) รายการ$/,m=>['Confirm: '+tw(m[1],0).toLowerCase()+' '+m[2]+' items',m[2]+' ခု '+tw(m[1],1)+'မှုကို အတည်ပြုပါ']],
+[/^ข้ามรายการที่มีปัญหา ([0-9]+) รายการ$/,m=>['Skipping '+m[1]+' problem rows','ပြဿနာရှိသော '+m[1]+' ခုကို ကျော်မည်']],
+[/^แสดง ([0-9]+) รายการแรก$/,m=>['Showing the first '+m[1],'ပထမ '+m[1]+' ခုကိုပြထားသည်']],
+[/^วันที่ (.+)$/,m=>['Date '+m[1],'ရက်စွဲ '+m[1]]],
+[/^ผู้บันทึก (.+)$/,m=>['By '+m[1],'မှတ်သူ '+m[1]]],
+[/^บันทึก ([0-9/]+ [0-9:]+)$/,m=>['Saved '+m[1],'သိမ်းချိန် '+m[1]]],
+[/^บันทึก(รับเข้า|เบิกออก) เลขที่ (.+) สำเร็จ$/,m=>['Saved '+tw(m[1],0).toLowerCase()+' no. '+m[2],tw(m[1],1)+'မှု '+m[2]+' သိမ်းပြီးပါပြီ']],
+[/^นำเข้าสำเร็จ ([0-9]+) รายการ$/,m=>['Imported '+m[1]+' items',m[1]+' ခု တင်သွင်းပြီးပါပြီ']],
+[/^กำลังนำเข้า (.+)$/,m=>['Importing '+m[1],'တင်သွင်းနေသည် '+m[1]]],
+[/^กำลังแปล ([0-9]+) รายการ…$/,m=>['Translating '+m[1]+' items…',m[1]+' ခု ဘာသာပြန်နေသည်…']],
+[/^(บันทึกไม่สำเร็จ|ไม่สำเร็จ): (.+)$/,m=>['Failed: '+m[2],'မအောင်မြင်ပါ: '+m[2]]],
+[/^(.+): จำนวนไม่ถูกต้อง$/,m=>[m[1]+': invalid quantity',m[1]+': ပမာဏမမှန်ပါ']],
+[/^(.+): เบิก (.+) เกินคงเหลือ (.+)$/,m=>[m[1]+': withdrawing '+m[2]+' exceeds stock '+m[3],m[1]+': ထုတ် '+m[2]+' သည် လက်ကျန် '+m[3]+' ထက်ကျော်နေသည်']],
+[/^ยอดคงเหลือเปลี่ยนไป: (.+) ไม่พอเบิก$/,m=>['Stock changed: not enough '+m[1],'လက်ကျန်ပြောင်းသွားသည်: '+m[1]+' မလုံလောက်ပါ']],
+[/^แถว ([0-9]+)(.*): (.+)$/,m=>{const r=m[3].split(', ');return['Row '+m[1]+m[2]+': '+r.map(x=>tw(x,0)).join(', '),'အတန်း '+m[1]+m[2]+': '+r.map(x=>tw(x,1)).join(', ')]}]
+];
+function strip(s){const ch=[...s],w=c=>/[0-9A-Za-z(ก-๛]/.test(c);let a=0,b=ch.length;while(a<b&&!w(ch[a]))a++;while(b>a&&!w(ch[b-1]))b--;return[ch.slice(0,a).join(''),ch.slice(a,b).join(''),ch.slice(b).join('')]}
+function tx(s,i){if(!s)return s;if(DICT[s])return DICT[s][i];if(s.includes(' · '))return s.split(' · ').map(x=>tx(x,i)).join(' · ');for(const[re,f]of PAT){const m=s.match(re);if(m)return f(m)[i]}const[a,b,c]=strip(s);if((a||c)&&b)return a+tx(b,i)+c;return s}
+function walk(){const i=LANG==='en'?0:1,th=/[ก-๛]/;['#nav','#main','#modal','#toast'].forEach(sel=>{const root=document.querySelector(sel);if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let x;while(x=w.nextNode()){const v=x.nodeValue;if(!th.test(v))continue;const t=v.trim(),a=v.indexOf(t),o=tx(t,i);if(o!==t)x.nodeValue=v.slice(0,a)+o+v.slice(a+t.length)}root.querySelectorAll('[placeholder],[title]').forEach(e=>['placeholder','title'].forEach(n=>{const v=e.getAttribute(n);if(v&&th.test(v)){const o=tx(v,i);if(o!==v)e.setAttribute(n,o)}}))})}
+const OB={childList:true,subtree:true,characterData:true},obs=new MutationObserver(()=>{if(LANG==='th')return;obs.disconnect();try{walk()}catch(e){}obs.observe(document.body,OB)});obs.observe(document.body,OB);
+const LG=[['en','English','English'],['my','မြန်မာ','Burmese (Myanmar script)'],['zh','中文','Simplified Chinese'],['lo','ລາວ','Lao'],['km','ខ្មែរ','Khmer'],['vi','Tiếng Việt','Vietnamese'],['ja','日本語','Japanese']];
+let PLS='';try{PLS=localStorage.getItem('pl')||''}catch(e){}
+const pl=()=>LANG==='th'?'':LANG,tl=(p,c)=>c==='en'?p.nameEn:c==='my'?p.nameMy:(p.tr||{})[c]||'';
+const pn=p=>{if(!p)return'';const x=pl()?tl(p,pl()):'';return esc(p.name)+(x?' <span class="mu">('+esc(x)+')</span>':'')};
+const pnl=l=>pn(S.prods.find(p=>p.id===l.pid))||esc(l.name);
+const pall=p=>p.name+' '+(p.nameEn||'')+' '+(p.nameMy||'')+' '+Object.values(p.tr||{}).join(' ');
+const lgbar=()=>'<div class="lg"><select data-br title="สาขา">'+brs().map(b=>'<option value="'+esc(b.id)+'" '+(b.id===CB?'selected':'')+'>🏪 '+esc(b.name)+'</option>').join('')+'</select>'+[['th','ไทย'],['en','English'],['my','မြန်မာ']].map(([k,l])=>'<button class="'+(LANG===k?'on':'')+'" data-lang="'+k+'">'+l+'</button>').join('')+(db?'<button data-logout>ออกจากระบบ</button>':'')+'</div>';
+async function autoTr(cs){if(busy)return;cs=cs||(pl()?[pl()]:['en','my']);const L=S.prods.filter(p=>p.active!==false&&cs.some(c=>!tl(p,c)));if(!L.length)return toast('ทุกสินค้ามีชื่อแปลแล้ว');const sm=window.claude&&await claude.use('sample');if(!sm)return toast('แปลอัตโนมัติไม่ได้ในมุมมองนี้',1);busy=true;toast('กำลังแปล '+L.length+' รายการ…');
+const nm=cs.map(c=>LG.find(x=>x[0]===c)[2]).join(' and ');
+try{for(let i=0;i<L.length;i+=40){const ch=L.slice(i,i+40),out=await sm.json('Translate these Thai restaurant stock item names into short natural '+nm+'. Reply ONLY with a JSON array, same order and same length, each element an object with keys '+JSON.stringify(cs)+' (value in the matching language and script). Names: '+JSON.stringify(ch.map(p=>p.name)));
+for(let j=0;j<ch.length;j++){const o=(out&&out[j])||{},p=ch[j],u={},t={...(p.tr||{})};let nt=0;cs.forEach(c=>{const v=o[c]&&String(o[c]).trim();if(!v||tl(p,c))return;if(c==='en')u.nameEn=v;else if(c==='my')u.nameMy=v;else{t[c]=v;nt=1}});if(nt)u.tr=t;if(Object.keys(u).length)await db.collection('products').doc(p.id).update(u)}}
+toast('แปลชื่อเรียบร้อย')}catch(e){toast('ไม่สำเร็จ: '+(e.message||e.code),1)}busy=false;render()}
+const EX={},SO={prods:{k:'name',d:1},hist:{k:'ts',d:-1},manage:{k:'name',d:1},in:{k:'name',d:1},out:{k:'name',d:1},cat:{k:'name',d:1},rs:{k:'s',d:1}};
+const sortBy=(t,L,G)=>{const s=SO[t],g=G[s.k]||Object.values(G)[0];return [...L].sort((a,b)=>{const x=g(a),y=g(b);return(typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),'th',{numeric:true}))*s.d})};
+const th=(t,k,label,cls)=>{const s=SO[t],on=s.k===k;return`<th class="${cls||''} sh" data-sort="${t}:${k}">${label}${on?(s.d>0?' ↑':' ↓'):' ⇅'}</th>`};
+function byCat(A,B){const g={};A.forEach(p=>(g[p.cat||'ไม่ระบุหมวด']??=[]).push(p));const ks=Object.keys(g).sort((a,b)=>a.localeCompare(b,'th'));if(!ks.length)return'';
+return`<div class="bar"><h2 style="margin:6px 0">สต๊อกแยกตามหมวดหมู่</h2><button class="b g" data-allcat="1">เปิดทั้งหมด</button><button class="b g" data-allcat="0">ปิดทั้งหมด</button></div>`+ks.map(k=>{const L=sortBy('cat',g[k],{name:p=>p.name,q:p=>(B[p.id]||{q:0}).q,last:p=>{const b=B[p.id]||{};return b.last==='in'?1:b.last==='out'?-1:0},s:p=>({out:0,low:1,ok:2})[status(p,(B[p.id]||{q:0}).q)]}),open=EX[k],nl=L.filter(p=>status(p,(B[p.id]||{q:0}).q)==='low').length,no=L.filter(p=>status(p,(B[p.id]||{q:0}).q)==='out').length;
+return`<div class="card"><div class="ch" data-cat="${esc(k)}"><b>${open?'▼':'▶'} หมวด ${esc(k)}</b> <span class="mu">(${L.length} รายการ)</span>${nl?` <span class="tag low">ใกล้หมด ${nl}</span>`:''}${no?` <span class="tag out">หมด ${no}</span>`:''}</div>${open?`<div class="tw" style="margin-top:8px"><table style="min-width:420px"><tr><th></th>${th('cat','name','ชื่อสินค้า')}${th('cat','q','คงเหลือ','r')}${th('cat','last','ล่าสุด')}${th('cat','s','สถานะ')}</tr>${L.map((p,i)=>{const b=B[p.id]||{q:0},s=status(p,b.q);return`<tr class="r-${s}"><td>${i+1}.</td><td>${pn(p)}</td><td class="r"><b>${fmt(b.q)}</b> ${esc(p.unit)}</td><td>${arr(b)}</td><td><span class="tag ${s}">${ST[s]}</span></td></tr>`}).join('')}</table></div>`:''}</div>`}).join('')}
+function prods(){const{B}=calc();let L=S.prods.filter(p=>p.active!==false).map(p=>({p,b:B[p.id]||{q:0,li:'',lo:''}})).map(x=>({...x,s:status(x.p,x.b.q)}));
+const q=F.q.toLowerCase();L=L.filter(x=>(!q||pall(x.p).toLowerCase().includes(q))&&(!F.cat||x.p.cat===F.cat)&&(!F.st||x.s===F.st));L=sortBy('prods',L,{name:x=>x.p.name,cat:x=>x.p.cat||'',unit:x=>x.p.unit||'',q:x=>x.b.q,last:x=>x.b.last==='in'?1:x.b.last==='out'?-1:0,min:x=>x.p.min,li:x=>x.b.li,lo:x=>x.b.lo,s:x=>({out:0,low:1,ok:2})[x.s]});
+return`<h2>สินค้าทั้งหมด</h2><div class="bar"><input id="fq" data-f="q" placeholder="ค้นหาชื่อสินค้า" value="${esc(F.q)}"><select data-f="cat">${catOpts(F.cat)}</select><select data-f="st"><option value="">ทุกสถานะ</option>${Object.entries(ST).map(([k,v])=>`<option value="${k}" ${F.st===k?'selected':''}>${v}</option>`).join('')}</select><span class="mu">${L.length} รายการ</span></div>
+<div class="tw"><table><tr>${th('prods','name','ชื่อสินค้า')}${th('prods','cat','หมวดหมู่')}${th('prods','unit','หน่วย')}${th('prods','q','คงเหลือ','r')}${th('prods','last','ล่าสุด')}${th('prods','min','ขั้นต่ำ','r')}${th('prods','li','รับเข้าล่าสุด')}${th('prods','lo','เบิกล่าสุด')}${th('prods','s','สถานะ')}</tr>${L.map(x=>`<tr class="r-${x.s}"><td>${pn(x.p)}</td><td>${esc(x.p.cat)}</td><td>${esc(x.p.unit)}</td><td class="r"><b>${fmt(x.b.q)}</b></td><td>${arr(x.b)}</td><td class="r">${fmt(x.p.min)}</td><td>${dmy(x.b.li)}</td><td>${dmy(x.b.lo)}</td><td><span class="tag ${x.s}">${ST[x.s]}</span></td></tr>`).join('')||'<tr><td class="mu">ไม่พบสินค้า</td></tr>'}</table></div>`}
+
+function restock(){const{B}=calc();let L=S.prods.filter(p=>p.active!==false).map(p=>{const q=(B[p.id]||{q:0}).q;return{p,q,s:status(p,q),nd:r3(Math.max(p.min-q,0))}}).filter(x=>x.s!=='ok'&&(!F.cat||x.p.cat===F.cat));
+L=sortBy('rs',L,{name:x=>x.p.name,cat:x=>x.p.cat||'',q:x=>x.q,min:x=>x.p.min,nd:x=>x.nd,s:x=>({out:0,low:1})[x.s]});
+return`<h2>🛒 ต้องเติมสต๊อก</h2><div class="bar"><select data-f="cat">${catOpts(F.cat)}</select><span class="mu">${L.length} รายการ</span><button class="b gn" data-v="in" style="margin-left:auto">🟢 ไปรับเข้าสินค้า</button><button class="b g" data-exp="r">ส่งออกรายการที่ต้องเติม</button></div>
+<div class="tw"><table><tr>${th('rs','name','ชื่อสินค้า')}${th('rs','cat','หมวดหมู่')}${th('rs','q','คงเหลือ','r')}${th('rs','min','ขั้นต่ำ','r')}${th('rs','nd','ขาดจากขั้นต่ำ','r')}${th('rs','s','สถานะ')}</tr>${L.map(x=>`<tr class="r-${x.s}"><td>${pn(x.p)}</td><td>${esc(x.p.cat)}</td><td class="r"><b>${fmt(x.q)}</b> ${esc(x.p.unit)}</td><td class="r">${fmt(x.p.min)}</td><td class="r ${x.nd?'rtx':''}">${x.nd?fmt(x.nd)+' '+esc(x.p.unit):'–'}</td><td><span class="tag ${x.s}">${ST[x.s]}</span></td></tr>`).join('')||'<tr><td class="mu">ไม่มีสินค้าที่ต้องเติม</td></tr>'}</table></div>`}
+
+function mv(k){const{B}=calc(),m=M[k],q=m.q.toLowerCase(),isIn=k==='in';
+const L=sortBy(k,S.prods.filter(p=>p.active!==false&&(!q||pall(p).toLowerCase().includes(q))&&(!m.cat||p.cat===m.cat)),{name:p=>p.name,cat:p=>p.cat||'',unit:p=>p.unit||'',q:p=>(B[p.id]||{q:0}).q,af:p=>(B[p.id]||{q:0}).q+(+D[k][p.id]||0)*(isIn?1:-1),amt:p=>+D[k][p.id]||0});
+const cnt=Object.values(D[k]).filter(v=>+v>0).length;
+return`<h2 class="${isIn?'hin':'hout'}">${isIn?'🟢 รับเข้าสินค้า':'🔴 เบิกออกสินค้า'}</h2><div class="card"><div class="f"><div><label>วันที่${isIn?'รับเข้า':'เบิกออก'}</label><input type="date" data-m="date" value="${m.date}"></div><div><label>${isIn?'ผู้บันทึก':'ผู้เบิก/ผู้บันทึก'}</label><input data-m="who" id="mwho" value="${esc(m.who||WHO)}"></div><div><label>หมายเหตุ${isIn?'':'/เหตุผล'}</label><input data-m="note" id="mnote" value="${esc(m.note)}"></div></div></div>
+<div class="bar"><input id="mq" data-m="q" placeholder="ค้นหาสินค้า" value="${esc(m.q)}"><select data-m="cat">${catOpts(m.cat)}</select><span class="mu">กรอกแล้ว <b>${cnt}</b> รายการ</span><button class="b ${isIn?'gn':'rd'}" data-review="${k}" style="margin-left:auto">${isIn?'บันทึกรับเข้าทั้งหมด':'บันทึกเบิกออกทั้งหมด'}</button></div>
+<div class="tw"><table><tr>${th(k,'amt',isIn?'จำนวนรับเข้า':'จำนวนเบิกออก')}${th(k,'name','ชื่อสินค้า')}${th(k,'cat','หมวดหมู่')}${th(k,'unit','หน่วย')}${th(k,'q','คงเหลือ','r')}${th(k,'af','หลัง'+(isIn?'รับเข้า':'เบิก'),'r')}</tr>${L.map(p=>{const cur=(B[p.id]||{q:0}).q,v=D[k][p.id]??'',n=+v||0,af=r3(cur+(isIn?n:-n)),bad=!isIn&&n>cur;return`<tr><td><input class="q ${k}" id="q-${k}-${p.id}" data-q="${k}" data-pid="${p.id}" inputmode="decimal" value="${esc(v)}"></td><td>${pn(p)}</td><td>${esc(p.cat)}</td><td>${esc(p.unit)}</td><td class="r">${fmt(cur)} ${arr(B[p.id])}</td><td class="r ${bad?'err':n>0?(isIn?'gtx':'rtx'):''}" id="af-${k}-${p.id}">${fmt(af)}${bad?' ⚠ เกินสต๊อก':''}</td></tr>`}).join('')||'<tr><td class="mu">ไม่พบสินค้า</td></tr>'}</table></div>`}
+
+function review(k){const{B}=calc(),m=M[k],isIn=k==='in',rows=[],errs=[];
+if(!m.date)errs.push('กรุณาระบุวันที่');const who=(m.who||WHO).trim();if(!who)errs.push('กรุณาระบุผู้บันทึก');
+for(const[pid,v]of Object.entries(D[k])){if(v==='')continue;const n=Number(v),p=S.prods.find(x=>x.id===pid);if(!p)continue;
+if(!isFinite(n)||n<=0){errs.push(`${p.name}: จำนวนไม่ถูกต้อง`);continue}
+const cur=(B[pid]||{q:0}).q;if(!isIn&&n>cur+1e-9)errs.push(`${p.name}: เบิก ${fmt(n)} เกินคงเหลือ ${fmt(cur)}`);rows.push({pid,name:p.name,unit:p.unit,qty:r3(n),cur})}
+if(!rows.length&&!errs.length)errs.push('ยังไม่ได้กรอกจำนวนสินค้า');
+const id='d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+$('#modal').innerHTML=`<div class="ov"><div class="md"><h2 class="${k==='in'?'hin':'hout'}">${k==='in'?'🟢':'🔴'} ยืนยัน${TY[k]} ${rows.length} รายการ</h2><p class="mu">วันที่ ${dmy(m.date)} · ผู้บันทึก ${esc(who)}${m.note?' · '+esc(m.note):''}</p>${errs.length?`<div class="err">${errs.map(e=>'• '+esc(e)).join('<br>')}</div>`:`<table style="min-width:0">${rows.map(r=>`<tr><td>${pn(S.prods.find(p=>p.id===r.pid))}</td><td class="r">${isIn?'+':'-'}${fmt(r.qty)} ${esc(r.unit)}</td><td class="r mu">→ ${fmt(r3(r.cur+(isIn?r.qty:-r.qty)))}</td></tr>`).join('')}</table>`}
+<div class="bar" style="margin:14px 0 0;justify-content:flex-end"><button class="b g" data-close>${errs.length?'กลับไปแก้ไข':'ยกเลิก'}</button>${errs.length?'':`<button class="b ${k==='in'?'gn':'rd'}" id="cf" data-confirm="${k}" data-id="${id}">ยืนยันบันทึก</button>`}</div></div></div>`;
+$('#modal')._rows=rows}
+async function confirmSave(k,id){if(busy)return;busy=true;const btn=$('#cf');btn.disabled=true;btn.textContent='กำลังบันทึก…';const m=M[k],rows=$('#modal')._rows,who=(m.who||WHO).trim(),{B}=calc();
+// ตรวจยอดล่าสุดอีกครั้งก่อนเขียน
+if(k==='out'){const bad=rows.find(r=>r.qty>((B[r.pid]||{q:0}).q)+1e-9);if(bad){busy=false;$('#modal').innerHTML='';toast('ยอดคงเหลือเปลี่ยนไป: '+bad.name+' ไม่พอเบิก',1);render();return}}
+const now=new Date(),no=({in:'IN',out:'OUT'})[k]+'-'+m.date.replace(/-/g,'')+'-'+pad(now.getHours())+pad(now.getMinutes())+pad(now.getSeconds())+'-'+id.slice(-3).toUpperCase();
+try{await db.collection('docs').doc(id).set({type:k,branch:CB,no,date:m.date,ts:now.toISOString(),note:m.note,by:who,lines:rows.map(({cur,...r})=>r)});
+try{localStorage.setItem('who',who);WHO=who}catch(e){}
+D[k]={};m.note='';$('#modal').innerHTML='';toast('บันทึก'+TY[k]+' เลขที่ '+no+' สำเร็จ')}catch(e){toast('บันทึกไม่สำเร็จ: '+(e.message||e.code),1);$('#modal').innerHTML=''}
+busy=false;render()}
+
+function docModal(no){const d=S.docs.find(x=>x.no===no);if(!d)return;$('#modal').innerHTML=`<div class="ov"><div class="md"><h2>${esc(d.no)}</h2><p class="mu">${TY[d.type]} · ${dmy(d.date)} · บันทึก ${dmy(d.ts.slice(0,10))} ${tm(d.ts)} · ${esc(d.by)}${d.note?'<br>'+esc(d.note):''}</p><table style="min-width:0">${d.lines.map(l=>`<tr><td>${pnl(l)}</td><td class="r">${fmt(l.qty)} ${esc(l.unit)}</td></tr>`).join('')}</table><div class="bar" style="margin:14px 0 0;justify-content:flex-end"><button class="b g" data-close>ปิด</button></div></div></div>`}
+
+function histRows(){const{run}=calc(),q=H.q.toLowerCase();const pc={};S.prods.forEach(p=>pc[p.id]=p.cat);
+return sortBy('hist',run.filter(l=>(!H.type||l.d.type===H.type)&&(!H.from||l.d.date>=H.from)&&(!H.to||l.d.date<=H.to)&&(!H.by||l.d.by===H.by)&&(!H.cat||pc[l.pid]===H.cat)&&(!q||(l.name+l.d.no).toLowerCase().includes(q))),{no:l=>l.d.no,date:l=>l.d.date,ts:l=>l.d.ts,name:l=>l.name,type:l=>TY[l.d.type],inq:l=>l.d.type==='out'?0:l.qty,outq:l=>l.d.type==='out'?l.qty:0,after:l=>l.after,note:l=>l.d.note||'',by:l=>l.d.by||''})}
+function hist(){const L=histRows(),by=[...new Set(docsB().map(d=>d.by))];
+return`<h2>ประวัติการเคลื่อนไหว</h2><div class="bar"><input id="hq" data-h="q" placeholder="ค้นหาชื่อสินค้า/เลขที่เอกสาร" value="${esc(H.q)}"><button class="b g" data-range="t">วันนี้</button><button class="b g" data-range="y">เมื่อวาน</button><button class="b g" data-range="">ทั้งหมด</button></div>
+<div class="bar"><input type="date" data-h="from" value="${H.from}"><input type="date" data-h="to" value="${H.to}"><select data-h="type"><option value="">ทุกประเภท</option>${Object.entries(TY).map(([k,v])=>`<option value="${k}" ${H.type===k?'selected':''}>${v}</option>`).join('')}</select><select data-h="cat">${catOpts(H.cat)}</select><select data-h="by"><option value="">ทุกผู้บันทึก</option>${by.map(b=>`<option ${H.by===b?'selected':''}>${esc(b)}</option>`).join('')}</select><span class="mu">${L.length} รายการ</span></div>
+<div class="tw"><table style="min-width:900px"><tr>${th('hist','no','เลขที่เอกสาร')}${th('hist','date','วันที่')}${th('hist','ts','เวลา')}${th('hist','name','สินค้า')}${th('hist','type','ประเภท')}${th('hist','inq','รับเข้า','r')}${th('hist','outq','เบิกออก','r')}${th('hist','after','คงเหลือ','r')}${th('hist','note','หมายเหตุ')}${th('hist','by','ผู้บันทึก')}</tr>${L.slice(0,300).map(l=>`<tr><td><a class="dl" data-doc="${esc(l.d.no)}">${esc(l.d.no)}</a></td><td>${dmy(l.d.date)}</td><td>${tm(l.d.ts)}</td><td>${pnl(l)}</td><td class="${l.d.type==='out'?'rtx':'gtx'}">${l.d.type==='out'?'▼':'▲'} ${TY[l.d.type]}</td><td class="r gtx">${l.d.type==='out'?'':fmt(l.qty)}</td><td class="r rtx">${l.d.type==='out'?fmt(l.qty):''}</td><td class="r"><b>${fmt(l.after)}</b></td><td>${esc(l.d.note)}</td><td>${esc(l.d.by)}</td></tr>`).join('')||'<tr><td class="mu">ไม่พบรายการ</td></tr>'}</table></div>${L.length>300?'<p class="mu">แสดง 300 รายการล่าสุด ใช้ตัวกรองหรือส่งออก CSV เพื่อดูทั้งหมด</p>':''}`}
+
+function manage(){const e=EDIT?S.prods.find(p=>p.id===EDIT):null,{B}=calc();
+return`<h2>จัดการสินค้า</h2><div class="card"><b>🏪 สาขา</b><div class="bar" style="margin-top:8px"><input id="b-name" placeholder="ชื่อสาขา"><button class="b" data-addbranch>เพิ่มสาขา</button><span class="mu">${brs().map(b=>esc(b.name)).join(' · ')}</span></div><p class="mu" style="margin:0">รายการสินค้าใช้ร่วมกันทุกสาขา แต่สต๊อก ประวัติ และยอดยกมาแยกตามสาขาที่เลือกไว้</p></div><div class="card"><b>${e?'แก้ไขสินค้า':'เพิ่มสินค้าใหม่'}</b><div class="f" style="margin-top:8px"><div><label>ชื่อสินค้า *</label><input id="p-name" value="${esc(e?.name)}"></div><div><label>หมวดหมู่ *</label><input id="p-cat" list="cl" value="${esc(e?.cat)}"></div><div><label>หน่วยนับ *</label><input id="p-unit" list="ul" value="${esc(e?.unit)}"></div><div><label>จำนวนขั้นต่ำที่ควรมี</label><input id="p-min" inputmode="decimal" value="${e?e.min:0}"></div>${e?'':'<div><label>ยอดยกมา (ถ้ามี)</label><input id="p-open" inputmode="decimal"></div>'}<div><label>ชื่อภาษาอังกฤษ (ไม่บังคับ)</label><input id="p-en" value="${esc(e?.nameEn)}"></div><div><label>ชื่อภาษาพม่า (ไม่บังคับ)</label><input id="p-my" value="${esc(e?.nameMy)}"></div><div style="grid-column:1/-1"><label>หมายเหตุ</label><input id="p-note" value="${esc(e?.note)}"></div></div><datalist id="cl">${['วัตถุดิบ','เนื้อสัตว์','ผัก','เครื่องปรุง','เครื่องดื่ม','ของใช้สิ้นเปลือง','อุปกรณ์',...cats()].map(c=>`<option>${esc(c)}`).join('')}</datalist><datalist id="ul">${['กก.','กรัม','ลิตร','มล.','ขวด','แพ็ก','กล่อง','ชิ้น','ฟอง','ถุง'].map(c=>`<option>${c}`).join('')}</datalist><div class="bar" style="margin:12px 0 0"><button class="b" data-saveprod>${e?'บันทึกการแก้ไข':'เพิ่มสินค้า'}</button>${e?'<button class="b g" data-edit="">ยกเลิก</button>':''}</div></div>
+<div class="tw"><table><tr>${th('manage','name','ชื่อ')}${th('manage','cat','หมวดหมู่')}${th('manage','unit','หน่วย')}${th('manage','q','คงเหลือ','r')}${th('manage','act','สถานะ')}<th></th></tr>${sortBy('manage',S.prods,{name:p=>p.name,cat:p=>p.cat||'',unit:p=>p.unit||'',q:p=>(B[p.id]||{q:0}).q,act:p=>p.active===false?1:0}).map(p=>`<tr style="${p.active===false?'opacity:.5':''}"><td>${pn(p)}</td><td>${esc(p.cat)}</td><td>${esc(p.unit)}</td><td class="r">${fmt((B[p.id]||{q:0}).q)}</td><td>${p.active===false?'ปิดใช้งาน':'เปิดใช้งาน'}</td><td><a class="dl" data-edit="${p.id}">แก้ไข</a> · <a class="dl" data-toggle="${p.id}">${p.active===false?'เปิดใช้งาน':'ปิดใช้งาน'}</a></td></tr>`).join('')}</table></div>`}
+async function saveProd(){const g=i=>($('#'+i)?.value||'').trim(),name=g('p-name'),en=g('p-en'),my=g('p-my'),cat=g('p-cat'),unit=g('p-unit'),min=g('p-min')===''?0:Number(g('p-min')),op=g('p-open')===''?0:Number(g('p-open'));
+if(!name||!cat||!unit)return toast('กรุณากรอกชื่อ หมวดหมู่ และหน่วยนับ',1);if(!isFinite(min)||min<0||!isFinite(op)||op<0)return toast('จำนวนต้องเป็นตัวเลขไม่ติดลบ',1);
+
+if(S.prods.some(p=>p.name===name&&p.id!==EDIT))return toast('มีสินค้าชื่อนี้อยู่แล้ว',1);
+try{if(EDIT){await db.collection('products').doc(EDIT).update({name,nameEn:en,nameMy:my,cat,unit,min,note:g('p-note')});EDIT=null;toast('แก้ไขสินค้าแล้ว')}
+else{const ref=await db.collection('products').add({name,nameEn:en,nameMy:my,cat,unit,min,note:g('p-note'),active:true});
+if(op>0){const now=new Date();await db.collection('docs').doc('o'+ref.id).set({type:'open',no:'OPEN-'+ref.id.slice(-5).toUpperCase(),date:today(),ts:now.toISOString(),branch:CB,note:'ยอดยกมา',by:WHO||'ระบบ',lines:[{pid:ref.id,name,unit,qty:r3(op)}]})}
+toast('เพิ่มสินค้าแล้ว')}}catch(e){toast('ไม่สำเร็จ: '+(e.message||e.code),1)}render()}
+
+function io(){return`<h2>นำเข้า/ส่งออกข้อมูล</h2><div class="card"><b>ส่งออก CSV</b><div class="bar" style="margin-top:8px"><button class="b" data-exp="p">ส่งออกรายการสินค้า</button><button class="b g" data-exp="h">ส่งออกประวัติ (ตามตัวกรองในหน้าประวัติ)</button></div><p class="mu">ประวัติจะส่งออกตามช่วงวันที่/ตัวกรองที่ตั้งไว้ในหน้า “ประวัติการเคลื่อนไหว”</p></div><div class="card"><b>นำเข้าสินค้าจากไฟล์ CSV (เพิ่มทีละมากๆ)</b><ol class="mu"><li>ดาวน์โหลดไฟล์ตัวอย่าง (มีแต่หัวตาราง)</li><li>เปิดด้วย Excel หรือ Google Sheets กรอกข้อมูล แล้วบันทึกเป็น CSV UTF-8</li><li>อัปโหลดกลับมาที่นี่ ตรวจตัวอย่าง แล้วกดยืนยัน สินค้าจะถูกเพิ่มทันที</li></ol><div class="bar"><button class="b g" data-tpl>ดาวน์โหลดไฟล์ตัวอย่าง</button><input type="file" id="imf" accept=".csv,text/csv"></div>${imPrev()}</div>`}
+let IM=null;
+function parseCSV(t){t=t.replace(/^\ufeff/,'');const R=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===','){r.push(c);c=''}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;r.push(c);c='';R.push(r);r=[]}else c+=ch}if(c||r.length){r.push(c);R.push(r)}return R.filter(x=>x.some(v=>v.trim()))}
+async function tpl(){if(!dl)return toast('ดาวน์โหลดไม่ได้ในมุมมองนี้',1);try{await dl.save({filename:'ไฟล์ตัวอย่างนำเข้าสินค้า.csv',data:csv([['ชื่อสินค้า','หมวดหมู่','หน่วยนับ','จำนวนขั้นต่ำ','ยอดยกมา','หมายเหตุ','ชื่อภาษาอังกฤษ','ชื่อภาษาพม่า']])})}catch(e){toast('ยกเลิกหรือบันทึกไฟล์ไม่สำเร็จ',1)}}
+function readFile(inp){const f=inp.files[0];if(!f)return;if(f.size>2e6)return toast('ไฟล์ใหญ่เกินไป',1);const fr=new FileReader();fr.onload=()=>{const R=parseCSV(String(fr.result));if(R.length<2){IM={rows:[],errs:['ไฟล์ว่างหรือไม่มีข้อมูลใต้หัวตาราง']};return render()}
+const H=R[0].map(x=>x.trim()),ix=n=>H.indexOf(n);if(['ชื่อสินค้า','หมวดหมู่','หน่วยนับ'].some(n=>ix(n)<0)){IM={rows:[],errs:['หัวตารางไม่ตรงกับไฟล์ตัวอย่าง กรุณาดาวน์โหลดไฟล์ตัวอย่างใหม่ และบันทึกเป็น CSV UTF-8']};return render()}
+const names=new Set(S.prods.map(p=>p.name)),rows=[],errs=[];
+R.slice(1).forEach((r,i)=>{const n=i+2,g=k=>ix(k)<0?'':(r[ix(k)]||'').trim(),name=g('ชื่อสินค้า'),cat=g('หมวดหมู่'),unit=g('หน่วยนับ'),mn=g('จำนวนขั้นต่ำ'),op=g('ยอดยกมา'),e=[];
+if(!name)e.push('ไม่มีชื่อสินค้า');if(!cat)e.push('ไม่มีหมวดหมู่');if(!unit)e.push('ไม่มีหน่วยนับ');
+const nm=mn===''?0:Number(mn),no=op===''?0:Number(op);if(!isFinite(nm)||nm<0)e.push('จำนวนขั้นต่ำไม่ถูกต้อง');if(!isFinite(no)||no<0)e.push('ยอดยกมาไม่ถูกต้อง');
+if(name&&names.has(name))e.push('ชื่อซ้ำ');
+if(e.length)errs.push('แถว '+n+(name?' ('+name+')':'')+': '+e.join(', '));else{names.add(name);rows.push({name,cat,unit,min:r3(nm),open:r3(no),note:g('หมายเหตุ'),en:g('ชื่อภาษาอังกฤษ'),my:g('ชื่อภาษาพม่า')})}});
+IM={rows,errs};render()};fr.onerror=()=>toast('อ่านไฟล์ไม่ได้',1);fr.readAsText(f,'UTF-8')}
+function imPrev(){if(!IM)return'';return(IM.errs.length?`<div class="err" style="margin:8px 0"><b>ข้ามรายการที่มีปัญหา ${IM.errs.length} รายการ</b><br>${IM.errs.slice(0,30).map(e=>'• '+esc(e)).join('<br>')}</div>`:'')+(IM.rows.length?`<p><b>พร้อมนำเข้า ${IM.rows.length} รายการ</b></p><div class="tw"><table><tr><th>ชื่อ</th><th>หมวดหมู่</th><th>หน่วย</th><th class="r">ขั้นต่ำ</th><th class="r">ยอดยกมา</th></tr>${IM.rows.slice(0,50).map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.cat)}</td><td>${esc(r.unit)}</td><td class="r">${fmt(r.min)}</td><td class="r">${fmt(r.open)}</td></tr>`).join('')}</table></div>${IM.rows.length>50?'<p class="mu">แสดง 50 รายการแรก</p>':''}<div class="bar" style="margin-top:10px"><button class="b" data-doimport>ยืนยันนำเข้า ${IM.rows.length} รายการ</button><button class="b g" data-clearim>ยกเลิก</button></div>`:'<p class="mu">ไม่มีรายการที่นำเข้าได้</p>')}
+async function doImport(){if(busy||!IM||!IM.rows.length)return;busy=true;const rows=IM.rows;let ok=0;
+try{for(const r of rows){const ref=await db.collection('products').add({name:r.name,nameEn:r.en||'',nameMy:r.my||'',cat:r.cat,unit:r.unit,min:r.min,note:r.note,active:true});
+if(r.open>0){const now=new Date();await db.collection('docs').doc('o'+ref.id).set({type:'open',no:'OPEN-'+ref.id.slice(-5).toUpperCase(),date:today(),ts:now.toISOString(),branch:CB,note:'ยอดยกมา (นำเข้าไฟล์)',by:WHO||'ระบบ',lines:[{pid:ref.id,name:r.name,unit:r.unit,qty:r.open}]})}
+ok++;if(ok%5===0)toast('กำลังนำเข้า '+ok+'/'+rows.length)}
+toast('นำเข้าสำเร็จ '+ok+' รายการ');IM=null}catch(e){toast('หยุดที่รายการที่ '+(ok+1)+': '+(e.message||e.code)+' (นำเข้าแล้ว '+ok+')',1);IM.rows=IM.rows.slice(ok)}
+busy=false;render()}
+function exp(k){const{B}=calc();if(k==='p')save('สินค้า-'+bn()+'-'+today()+'.csv',[['ชื่อสินค้า','หมวดหมู่','หน่วย','คงเหลือ','ขั้นต่ำ','สถานะ'],...S.prods.map(p=>{const q=(B[p.id]||{q:0}).q;return[p.name,p.cat,p.unit,q,p.min,ST[status(p,q)]]})]);
+else if(k==='r')save('ต้องเติมสต๊อก-'+bn()+'-'+today()+'.csv',[['ชื่อสินค้า','หมวดหมู่','หน่วย','คงเหลือ','ขั้นต่ำ','ขาดจากขั้นต่ำ','สถานะ'],...S.prods.filter(p=>p.active!==false).map(p=>({p,q:(B[p.id]||{q:0}).q})).filter(x=>status(x.p,x.q)!=='ok').map(x=>[x.p.name,x.p.cat,x.p.unit,x.q,x.p.min,r3(Math.max(x.p.min-x.q,0)),ST[status(x.p,x.q)]])]);
+else save('ประวัติ-'+bn()+'-'+today()+'.csv',[['เลขที่เอกสาร','วันที่','เวลา','สินค้า','ประเภท','รับเข้า','เบิกออก','คงเหลือ','หมายเหตุ','ผู้บันทึก'],...histRows().map(l=>[l.d.no,dmy(l.d.date),tm(l.d.ts),l.name,TY[l.d.type],l.d.type==='out'?'':l.qty,l.d.type==='out'?l.qty:'',l.after,l.d.note,l.d.by])])}
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-v],[data-go],[data-review],[data-close],[data-confirm],[data-doc],[data-range],[data-edit],[data-toggle],[data-saveprod],[data-exp],[data-tpl],[data-doimport],[data-clearim],[data-sort],[data-cat],[data-allcat],[data-lang],[data-autotr],[data-cl],[data-navtg],[data-login],[data-logout],[data-addbranch]');if(!t)return;const d=t.dataset;
+if(d.v){V=d.v;render()}else if(d.go!==undefined&&t.classList.contains('stat')){if(d.go){V='prods';F={q:'',cat:'',st:d.go};render()}}
+else if(d.review)review(d.review);else if('close'in d)$('#modal').innerHTML='';else if(d.confirm)confirmSave(d.confirm,d.id);else if(d.doc)docModal(d.doc);
+else if('range'in d){const x=d.range==='t'?today():d.range==='y'?yday():'';H.from=x;H.to=x;render()}
+else if('edit'in d){EDIT=d.edit||null;render();scrollTo(0,0)}else if(d.toggle){const p=S.prods.find(x=>x.id===d.toggle);db.collection('products').doc(p.id).update({active:p.active===false}).catch(x=>toast('ไม่สำเร็จ',1))}
+else if('saveprod'in d)saveProd();else if(d.exp)exp(d.exp);else if('tpl'in d)tpl();else if('doimport'in d)doImport();else if('clearim'in d){IM=null;render()}else if(d.sort){const[t,k]=d.sort.split(':'),s=SO[t];if(s.k===k)s.d=-s.d;else{s.k=k;s.d=1}render()}else if(d.cat!==undefined){EX[d.cat]=!EX[d.cat];render()}else if(d.allcat){S.prods.forEach(p=>EX[p.cat||'ไม่ระบุหมวด']=d.allcat==='1');render()}else if(d.lang){LANG=d.lang;try{localStorage.setItem('lang',LANG)}catch(e){}document.documentElement.lang=LANG;render()}else if('autotr'in d)autoTr();else if('addbranch'in d)addBranch();else if('login'in d)doLogin();else if('logout'in d)AUTH&&AUTH.signOut();else if(d.cl){CL[d.cl]=!CL[d.cl];render()}else if('navtg'in d){NC=!NC;try{localStorage.setItem('nc',NC?'1':'0')}catch(e){}render()}});
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;
+if(d.q){D[d.q][d.pid]=t.value;const{B}=calc(),cur=(B[d.pid]||{q:0}).q,n=+t.value||0,af=r3(cur+(d.q==='in'?n:-n)),bad=d.q==='out'&&n>cur,c=document.getElementById('af-'+d.q+'-'+d.pid);c.textContent=fmt(af)+(bad?' ⚠ เกินสต๊อก':'');c.className='r '+(bad?'err':n>0?(d.q==='in'?'gtx':'rtx'):'');
+const cnt=Object.values(D[d.q]).filter(v=>+v>0).length;document.querySelector('.bar .mu b').textContent=cnt}
+else if(d.m){M[V][d.m]=t.value;if(d.m!=='note'&&d.m!=='who')render()}else if(d.f){F[d.f]=t.value;render()}else if(d.h){H[d.h]=t.value;render()}});
+document.addEventListener('change',e=>{if(e.target.dataset.br!==undefined){CB=e.target.value;try{localStorage.setItem('br',CB)}catch(x){}D.in={};D.out={};render();return}if(e.target.dataset.pl!==undefined){PLS=e.target.value;try{localStorage.setItem('pl',PLS)}catch(x){}render();if(pl()&&S.prods.some(p=>p.active!==false&&!tl(p,pl())))autoTr([pl()]);return}if(e.target.id==='imf')return readFile(e.target);if(e.target.dataset.m==='who'||e.target.dataset.m==='note')M[V][e.target.dataset.m]=e.target.value});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pw'){doLogin();return}if(e.key==='Enter'&&e.target.dataset.q){e.preventDefault();const a=[...document.querySelectorAll('input.q')],i=a.indexOf(e.target);(a[i+1]||a[0]).focus()}});
+
+// ===== ตั้งค่า Firebase: วางค่าจาก Firebase Console แทนคำว่า PASTE =====
+const FB={apiKey:"AIzaSyCu3TUdUUwFyDy9qcY5u0ahKdIM5rKPm_s",authDomain:"sapparos.firebaseapp.com",projectId:"sapparos",appId:"1:213046473239:web:cf9c2442e400afaf2ea252"};
+const AUTH_EMAIL='staff@sapparos.app'; // อีเมลบัญชีพนักงาน (สร้างใน Firebase Authentication)
+// =====================================================================
+async function addBranch(){const n=(($('#b-name')||{}).value||'').trim();if(!n)return toast('กรุณากรอกชื่อสาขา',1);if(brs().some(b=>b.name===n))return toast('มีสาขาชื่อนี้แล้ว',1);try{const r=await db.collection('branches').add({name:n});CB=r.id;try{localStorage.setItem('br',CB)}catch(e){}D.in={};D.out={};toast('เพิ่มสาขาแล้ว')}catch(e){toast('ไม่สำเร็จ: '+(e.message||e.code),1)}render()}
+const loginView='<div class="card" style="max-width:380px;margin:40px auto"><h2>🍜 Sapparos Stock</h2><p class="mu">กรอกรหัสผ่านพนักงาน</p><input id="pw" type="password" autocomplete="current-password" style="width:100%"><div class="bar" style="margin-top:12px"><button class="b" data-login>เข้าสู่ระบบ</button></div><div class="err" id="lerr"></div></div>';
+let LOGIN='<p class="mu">กำลังโหลด…</p>',AUTH=null;
+function doLogin(){const v=($('#pw')||{}).value||'';if(!v)return;AUTH.signInWithEmailAndPassword(AUTH_EMAIL,v).catch(()=>{const e=$('#lerr');if(e)e.textContent='รหัสผ่านไม่ถูกต้อง'})}
+(function(){
+if(!window.firebase||FB.apiKey==='PASTE'){LOGIN='<div class="card"><b>ยังไม่ได้ตั้งค่า Firebase</b><p class="mu">วางค่า firebaseConfig ลงในไฟล์ตามคู่มือก่อนใช้งาน</p></div>';return}
+firebase.initializeApp(FB);AUTH=firebase.auth();const fs=firebase.firestore();
+dl={save:async({filename,data})=>{const u=URL.createObjectURL(new Blob([data],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000)}};
+let un=[];
+AUTH.onAuthStateChanged(u=>{un.forEach(f=>f());un=[];S.ready=false;
+if(!u){db=null;LOGIN=loginView;render();return}
+db=fs;let n=0,f1=0,f2=0,f3=0;const fin=()=>{if(++n>=3){S.ready=true;render()}};
+un.push(db.collection('products').onSnapshot(x=>{S.prods=x.docs.map(d=>({id:d.id,...d.data()}));if(!f1){f1=1;fin()}else render()},e=>toast('โหลดสินค้าไม่สำเร็จ',1)));
+un.push(db.collection('docs').onSnapshot(x=>{S.docs=x.docs.map(d=>d.data());if(!f2){f2=1;fin()}else render()},e=>toast('โหลดประวัติไม่สำเร็จ',1)));
+un.push(db.collection('branches').onSnapshot(x=>{S.br=x.docs.map(d=>({id:d.id,...d.data()})).filter(b=>b.id!=='main'&&b.name).sort((a,b)=>a.name.localeCompare(b.name,'th'));if(!brs().some(b=>b.id===CB))CB='main';if(!f3){f3=1;fin()}else render()},e=>toast('โหลดสาขาไม่สำเร็จ',1)));
+render()})})();
+render();
+</script></body></html>
