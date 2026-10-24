@@ -122,6 +122,25 @@ th,td{padding:6px 8px}
 .tw table.pin-product-name-after-input{width:max-content;min-width:0;table-layout:auto}
 .tw table.pin-product-name-after-input th:nth-child(2),.tw table.pin-product-name-after-input td:nth-child(2){width:max-content;min-width:0;max-width:none;overflow:visible;text-overflow:clip}
 .tw table.pin-product-name-after-input th:nth-child(3),.tw table.pin-product-name-after-input td:nth-child(3),.tw table.pin-product-name-after-input th:nth-child(4),.tw table.pin-product-name-after-input td:nth-child(4){width:1%;}
+
+/* ปรับทุกคอลัมน์ในหน้า ภาพรวม และสินค้าทั้งหมด ให้พอดีกับข้อมูล ไม่ยืดช่องว่าง */
+.tw table.pin-overview-two,
+.tw table.pin-product-name{width:max-content!important;min-width:0!important;max-width:none;table-layout:auto}
+.tw table.pin-overview-two th,.tw table.pin-overview-two td,
+.tw table.pin-product-name th,.tw table.pin-product-name td{width:auto;min-width:0;max-width:none;padding:6px 8px;white-space:nowrap}
+/* ชื่อสินค้าให้กว้างตามข้อความจริง โดยไม่บีบหรือตัดชื่อ */
+.tw table.pin-overview-two th:nth-child(2),.tw table.pin-overview-two td:nth-child(2),
+.tw table.pin-product-name th:first-child,.tw table.pin-product-name td:first-child{width:max-content;min-width:max-content;max-width:none;overflow:visible;text-overflow:clip}
+/* คอลัมน์ตัวเลข/วันที่/หน่วยใช้พื้นที่เท่าที่ข้อมูลต้องการ */
+.tw table.pin-overview-two th:nth-child(n+3),.tw table.pin-overview-two td:nth-child(n+3),
+.tw table.pin-product-name th:nth-child(n+2),.tw table.pin-product-name td:nth-child(n+2){width:max-content;min-width:0;max-width:none}
+
+/* จัดการสินค้า: ลดช่องว่างทุกคอลัมน์ให้พอดีกับข้อมูล */
+.tw table.pin-product-name-after-check{width:max-content!important;min-width:0!important;max-width:none;table-layout:auto}
+.tw table.pin-product-name-after-check th,.tw table.pin-product-name-after-check td{padding:6px 8px;white-space:nowrap;width:max-content;min-width:0;max-width:none}
+.tw table.pin-product-name-after-check th:first-child,.tw table.pin-product-name-after-check td:first-child{width:42px;min-width:42px;max-width:42px;padding-left:8px;padding-right:6px}
+.tw table.pin-product-name-after-check th:nth-child(2),.tw table.pin-product-name-after-check td:nth-child(2){width:max-content;min-width:max-content;max-width:none}
+.tw table.pin-product-name-after-check th:last-child,.tw table.pin-product-name-after-check td:last-child{padding-left:8px;padding-right:8px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 </head><body>
