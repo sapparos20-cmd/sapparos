@@ -1,0 +1,12 @@
+{
+  "name": "sapparos-stock-retention-cleanup",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scheduled cleanup of old Sapparos Stock Firestore in/out documents while preserving balances",
+  "scripts": {
+    "cleanup": "node scripts/cleanup-old-stock.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}
